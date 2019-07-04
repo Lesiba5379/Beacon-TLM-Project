@@ -1,0 +1,117 @@
+<html>
+<head>
+  <title>Express HTML</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div style="margin:100px;">
+    <nav class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <a class="navbar-brand" href="/dashboard">Dashboard</a>
+    <ul class="nav navbar-nav">
+      <li class="active">
+        <a href="/dashboard">Home</a>
+      </li>
+      <li class="pull-right">
+        <a href="/logout">logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+    <div class="jumbotron"  style="padding:40px;">
+      <div class="container">
+        <h2>Real time statistics.</h2>
+        <br/>
+        
+        <div id="myfirstchart" style="height: 250px;"></div>
+
+
+      </div>
+    </div>
+    <p>
+        <button id="send" class="btn btn-primary">Send Message</button>
+        <button id="close" class="btn btn-primary">Close</button>
+    </p>
+    <ul id="log" class="list-group"></ul>
+
+  </div>
+
+  <script>
+    var socket = new WebSocket('wss://echo.websocket.org/');
+    socket.onopen = function(event) {
+  log('Opened connection 🎉');
+  var json = JSON.stringify({ message: 'Hello' });
+  socket.send(json);
+  log('Sent: ' + json);
+}
+
+socket.onerror = function(event) {
+  log('Error: ' + JSON.stringify(event));
+}
+
+socket.onmessage = function (event) {
+  log('Received: ' + event.data);
+}
+
+socket.onclose = function(event) {
+  log('Closed connection 😱');
+}
+
+document.querySelector('#close').addEventListener('click', function(event) {
+  socket.close();
+  log('Closed connection 😱');
+});
+
+document.querySelector('#send').addEventListener('click', function(event) {
+  var json = JSON.stringify({ message: 'Hey there' });
+  socket.send(json);
+  log('Sent: ' + json);
+});
+
+var log = function(text) {
+  var li = document.createElement('li');
+  li.innerHTML = text;
+  li.className = "list-group-item";
+  document.getElementById('log').appendChild(li);
+
+}
+
+window.addEventListener('beforeunload', function() {
+  socket.close();
+});
+  </script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+<script>
+new Morris.Bar({
+  // ID of the element in which to draw the chart.
+  element: 'myfirstchart',
+  // Chart data records -- each entry in this array corresponds to a point on
+  // the chart.
+  data: [
+    { year: '2008', value: 20 },
+    { year: '2009', value: 10 },
+    { year: '2010', value: 5 },
+    { year: '2011', value: 5 },
+    { year: '2012', value: 20 }
+  ],
+  // The name of the data record attribute that contains x-values.
+  xkey: 'year',
+  // A list of names of data record attributes that contain y-values.
+  ykeys: ['value'],
+  // Labels for the ykeys -- will be displayed when you hover over the
+  // chart.
+  labels: ['Value']
+});
+
+
+</script>
+</body>
+</html>

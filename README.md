@@ -2,7 +2,7 @@
 
 ## About Beacon Telemetry Project
 
-Opens up a web socket to get beacon data from the kontakt IoT platform, counts how many times
+Opens up a web socket to get beacon data from the kontakt IoT platform, calculate how many times
 a beacon has been moved, then display it in a table and a graph.
 
 # Technology used:
